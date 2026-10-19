@@ -43,9 +43,7 @@ hoo-jeju-landing/
 
 ## 3. 게시 전 반드시 확인·교체할 것
 
-- [ ] **도메인** — `jehoowart.co.kr` 은 임시입니다. 실제 도메인이 정해지면
-      `CNAME`, `index.html`, `columns.html`, `robots.txt`, `sitemap.xml`, `llms.txt`, `사이트에-올리기.bat` 에서 일괄 치환하세요.
-      (VS Code `Ctrl+Shift+H` → `jehoowart.co.kr` → 새 도메인)
+- [x] **도메인** — `jehoowart.co.kr` 확정 (가비아 구매, 2026-10-19). 연결 절차는 `도메인-깃허브-연결-순서.md`.
 - [x] **비용(`#cost`)** — `제주점 수가.txt` 기준으로 반영 완료 (2026-10-14). 수가가 바뀌면 이 섹션만 고치면 됩니다.
 - [x] **원장 사진·약력(`#doctor`)** — 이경원 대표원장 사진·학력·학회·경력 반영 완료 (2026-10-15).
 - [x] **히어로 사진** — `hero-main.jpg` 반영 완료 (2026-10-15). og:image 도 같은 파일을 가리킵니다.
