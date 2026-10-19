@@ -1,0 +1,1392 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>관리 도구</title>
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          point: '#0d0d0d',
+          'point-soft': '#242522',
+          gold: '#b79e6c',
+          'gold-soft': '#eeece5',
+          line: '#d9d9d9',
+          muted: '#5b5b5b',
+        },
+        fontFamily: {
+          sans: ['"Noto Sans KR"', 'Pretendard', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        },
+        boxShadow: {
+          soft: '0 12px 32px rgba(13,13,13,0.08)',
+        },
+      },
+    },
+  }
+</script>
+
+<style>
+  body { font-family: "Noto Sans KR", "Pretendard", ui-sans-serif, system-ui, sans-serif; }
+  .out-tab.active { background: #0d0d0d; color: #fff; }
+  .out-panel.hidden { display: none; }
+  pre.code { white-space: pre-wrap; word-break: break-all; }
+  details > summary { cursor: pointer; list-style: none; }
+  details > summary::-webkit-details-marker { display: none; }
+  details[open] .chev { transform: rotate(180deg); }
+</style>
+</head>
+<body class="bg-[#f7f6f3] text-point antialiased pb-28">
+
+<header class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-line">
+  <div class="max-w-7xl mx-auto flex items-center justify-between px-6 h-16">
+    <div>
+      <p id="hdrTitle" class="font-extrabold tracking-tight">관리 도구</p>
+      <p class="text-[11px] text-muted tracking-wide">원장 컬럼 발행 · SEO / GEO 코드 생성기</p>
+    </div>
+    <a id="hdrSiteLink" href="#" target="_blank" rel="noopener" class="rounded-full border border-point text-sm font-bold px-4 py-2 hover:bg-gold-soft transition">홈페이지 열기 ↗</a>
+  </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-6 py-8">
+
+  <div class="rounded-2xl bg-white border border-line p-5 mb-6 text-sm text-muted leading-relaxed">
+    <p><b class="text-point">8. 원장 컬럼</b>은 홈페이지(GitHub 저장소)에 올라가 있는 목록을 기준으로 동작합니다.
+      발행할 때마다 홈페이지의 최신 목록을 먼저 불러와, <b class="text-point">지금 쓰는 글 1개만</b> 추가·수정하고 나머지 글은 그대로 둡니다.
+      다른 기기·다른 브라우저·시크릿 창에서 열어도 이전 글은 사라지지 않습니다.</p>
+    <p class="mt-2"><b class="text-point">1~7번</b>은 코드를 생성만 하는 도구입니다. 입력값은 이 브라우저에만 보관되며,
+      실제 사이트에 반영하려면 오른쪽에서 생성된 코드를 복사해 아래 안내대로 직접 파일에 붙여넣어야 합니다.</p>
+    <ul class="mt-2 list-disc list-inside space-y-0.5">
+      <li><b>SEO 메타태그</b> → <code class="bg-gold-soft px-1 rounded">index.html</code>의 <code class="bg-gold-soft px-1 rounded">&lt;head&gt;</code> 안, 기존 title/description/keywords 부분을 교체</li>
+      <li><b>구조화 데이터(JSON-LD)</b> → <code class="bg-gold-soft px-1 rounded">index.html</code>의 <code class="bg-gold-soft px-1 rounded">&lt;/head&gt;</code> 직전에 추가</li>
+      <li><b>robots.txt</b> → 다운로드 버튼으로 받아서 프로젝트 최상위(루트) 폴더에 저장 (sitemap.xml·llms.txt의 컬럼 목록은 발행할 때 자동으로 갱신됩니다)</li>
+    </ul>
+  </div>
+
+  <div class="grid lg:grid-cols-2 gap-8 items-start">
+
+    <!-- ============ 입력 폼 ============ -->
+    <div class="space-y-4">
+
+      <details class="rounded-2xl bg-white border border-line overflow-hidden">
+        <summary class="flex items-center justify-between px-5 py-4 font-bold">
+          <span>1. 기본 SEO</span>
+          <svg class="chev w-4 h-4 transition" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" stroke="#0d0d0d" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+        </summary>
+        <div class="px-5 pb-5 space-y-3 text-sm">
+          <label class="block">
+            <span class="text-muted text-xs">사이트 도메인 (마지막 슬래시 포함, 실제 배포 주소)</span>
+            <input data-bind="siteDomain" placeholder="https://www.실제도메인.com/" class="mt-1 w-full rounded-lg border border-line px-3 py-2">
+          </label>
+          <label class="block">
+            <span class="text-muted text-xs">페이지 제목 (title)</span>
+            <input data-bind="seoTitle" class="mt-1 w-full rounded-lg border border-line px-3 py-2">
+          </label>
+          <label class="block">
+            <span class="text-muted text-xs">메타 설명 (description)</span>
+            <textarea data-bind="seoDescription" rows="3" class="mt-1 w-full rounded-lg border border-line px-3 py-2"></textarea>
+          </label>
+          <label class="block">
+            <span class="text-muted text-xs">키워드 (쉼표로 구분)</span>
+            <input data-bind="seoKeywords" class="mt-1 w-full rounded-lg border border-line px-3 py-2">
+          </label>
+          <div class="rounded-lg bg-gold-soft/60 p-3 space-y-3">
+            <p class="text-xs font-bold">검색엔진 사이트 소유확인 (이 지점 전용 코드)</p>
+            <p class="text-[11px] text-muted leading-relaxed">
+              네이버 서치어드바이저 · 구글 서치콘솔에서 <b>이 지점 도메인</b>으로 발급받은 코드를 넣어주세요.
+              비워두면 아래 결과에서 해당 줄이 빠집니다. 다른 지점 코드를 넣으면 안 됩니다.
+            </p>
+            <label class="block">
+              <span class="text-muted text-xs">naver-site-verification</span>
+              <input data-bind="naverVerify" placeholder="네이버에서 받은 content 값만" class="mt-1 w-full rounded-lg border border-line px-3 py-2">
+            </label>
+            <label class="block">
+              <span class="text-muted text-xs">google-site-verification</span>
+              <input data-bind="googleVerify" placeholder="구글에서 받은 content 값만" class="mt-1 w-full rounded-lg border border-line px-3 py-2">
+            </label>
+          </div>
+        </div>
+      </details>
+
+      <details class="rounded-2xl bg-white border border-line overflow-hidden">
+        <summary class="flex items-center justify-between px-5 py-4 font-bold">
+          <span>2. Open Graph / Twitter 카드</span>
+          <svg class="chev w-4 h-4 transition" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" stroke="#0d0d0d" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+        </summary>
+        <div class="px-5 pb-5 space-y-3 text-sm">
+          <label class="block">
+            <span class="text-muted text-xs">공유용 이미지 URL (비워두면 도메인+/assets/images/hero-main.jpg 사용)</span>
+            <input data-bind="ogImage" placeholder="https://www.실제도메인.com/assets/images/hero-main.jpg" class="mt-1 w-full rounded-lg border border-line px-3 py-2">
+          </label>
+          <label class="block">
+            <span class="text-muted text-xs">사이트 이름 (og:site_name)</span>
+            <input data-bind="ogSiteName" class="mt-1 w-full rounded-lg border border-line px-3 py-2">
+          </label>
+          <label class="block">
+            <span class="text-muted text-xs">og:type</span>
+            <select data-bind="ogType" class="mt-1 w-full rounded-lg border border-line px-3 py-2">
+              <option value="website">website</option>
+              <option value="business.business">business.business</option>
+              <option value="place">place</option>
+            </select>
+          </label>
+          <label class="block">
+            <span class="text-muted text-xs">Twitter 카드 타입</span>
+            <select data-bind="twitterCard" class="mt-1 w-full rounded-lg border border-line px-3 py-2">
+              <option value="summary_large_image">summary_large_image</option>
+              <option value="summary">summary</option>
+            </select>
+          </label>
+        </div>
+      </details>
+
+      <details class="rounded-2xl bg-white border border-line overflow-hidden">
+        <summary class="flex items-center justify-between px-5 py-4 font-bold">
+          <span>3. 병원 정보 (구조화 데이터 기초)</span>
+          <svg class="chev w-4 h-4 transition" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" stroke="#0d0d0d" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+        </summary>
+        <div class="px-5 pb-5 grid sm:grid-cols-2 gap-3 text-sm">
+          <label class="block"><span class="text-muted text-xs">지점명</span>
+            <input data-bind="bizName" class="mt-1 w-full rounded-lg border border-line px-3 py-2"></label>
+          <label class="block"><span class="text-muted text-xs">대표원장</span>
+            <input data-bind="bizDoctor" class="mt-1 w-full rounded-lg border border-line px-3 py-2"></label>
+          <label class="block"><span class="text-muted text-xs">전화번호</span>
+            <input data-bind="bizPhone" class="mt-1 w-full rounded-lg border border-line px-3 py-2"></label>
+          <label class="block"><span class="text-muted text-xs">가격대 (priceRange)</span>
+            <input data-bind="bizPriceRange" class="mt-1 w-full rounded-lg border border-line px-3 py-2"></label>
+          <label class="block sm:col-span-2"><span class="text-muted text-xs">주소 - 도/광역시</span>
+            <input data-bind="bizRegion" class="mt-1 w-full rounded-lg border border-line px-3 py-2"></label>
+          <label class="block"><span class="text-muted text-xs">주소 - 시/구</span>
+            <input data-bind="bizCity" class="mt-1 w-full rounded-lg border border-line px-3 py-2"></label>
+          <label class="block"><span class="text-muted text-xs">주소 - 상세(도로명·건물)</span>
+            <input data-bind="bizStreet" class="mt-1 w-full rounded-lg border border-line px-3 py-2"></label>
+          <label class="block"><span class="text-muted text-xs">우편번호 (선택)</span>
+            <input data-bind="bizPostal" class="mt-1 w-full rounded-lg border border-line px-3 py-2"></label>
+          <label class="block"><span class="text-muted text-xs">진료 분야 (medicalSpecialty)</span>
+            <input data-bind="bizSpecialty" class="mt-1 w-full rounded-lg border border-line px-3 py-2"></label>
+          <label class="block"><span class="text-muted text-xs">위도 (선택, 예: 35.8242)</span>
+            <input data-bind="bizLat" class="mt-1 w-full rounded-lg border border-line px-3 py-2"></label>
+          <label class="block"><span class="text-muted text-xs">경도 (선택, 예: 127.1480)</span>
+            <input data-bind="bizLng" class="mt-1 w-full rounded-lg border border-line px-3 py-2"></label>
+        </div>
+      </details>
+
+      <details class="rounded-2xl bg-white border border-line overflow-hidden">
+        <summary class="flex items-center justify-between px-5 py-4 font-bold">
+          <span>4. 진료시간</span>
+          <svg class="chev w-4 h-4 transition" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" stroke="#0d0d0d" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+        </summary>
+        <div id="hoursList" class="px-5 pb-5 space-y-2 text-sm"></div>
+      </details>
+
+      <details class="rounded-2xl bg-white border border-line overflow-hidden">
+        <summary class="flex items-center justify-between px-5 py-4 font-bold">
+          <span>5. 자주 묻는 질문 (FAQPage)</span>
+          <svg class="chev w-4 h-4 transition" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" stroke="#0d0d0d" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+        </summary>
+        <div class="px-5 pb-5 text-sm">
+          <div id="faqList" class="space-y-4"></div>
+          <button id="addFaqBtn" type="button" class="mt-3 rounded-full border border-point text-xs font-bold px-4 py-2 hover:bg-gold-soft transition">+ 질문 추가</button>
+        </div>
+      </details>
+
+      <details class="rounded-2xl bg-white border border-line overflow-hidden">
+        <summary class="flex items-center justify-between px-5 py-4 font-bold">
+          <span>6. AI 크롤러 허용 (GEO / robots.txt)</span>
+          <svg class="chev w-4 h-4 transition" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" stroke="#0d0d0d" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+        </summary>
+        <div class="px-5 pb-5 text-sm">
+          <p class="text-muted text-xs mb-3">체크하면 해당 AI가 사이트를 읽어 답변에 인용할 수 있도록 허용(Allow)합니다. 체크를 풀면 차단(Disallow)됩니다.</p>
+          <div id="botList" class="space-y-2"></div>
+        </div>
+      </details>
+
+      <details class="rounded-2xl bg-white border border-line overflow-hidden">
+        <summary class="flex items-center justify-between px-5 py-4 font-bold">
+          <span>7. llms.txt / sitemap.xml</span>
+          <svg class="chev w-4 h-4 transition" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" stroke="#0d0d0d" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+        </summary>
+        <div class="px-5 pb-5 space-y-3 text-sm">
+          <p class="text-muted text-xs leading-relaxed">두 파일의 <b class="text-point">컬럼 목록</b>은 컬럼을 발행할 때 자동으로 갱신됩니다. 아래 값은 파일 전체를 새로 만들 때만 씁니다.</p>
+          <label class="block">
+            <span class="text-muted text-xs">한 줄 요약 (llms.txt)</span>
+            <textarea data-bind="llmsSummary" rows="2" class="mt-1 w-full rounded-lg border border-line px-3 py-2"></textarea>
+          </label>
+          <label class="block">
+            <span class="text-muted text-xs">추가 설명 (선택)</span>
+            <textarea data-bind="llmsDetail" rows="2" class="mt-1 w-full rounded-lg border border-line px-3 py-2"></textarea>
+          </label>
+          <label class="block">
+            <span class="text-muted text-xs">sitemap.xml 홈페이지 최종 수정일</span>
+            <input type="date" data-bind="lastmod" class="mt-1 w-full rounded-lg border border-line px-3 py-2">
+          </label>
+        </div>
+      </details>
+
+      <details open class="rounded-2xl bg-white border border-line overflow-hidden">
+        <summary class="flex items-center justify-between px-5 py-4 font-bold">
+          <span>8. 원장 컬럼 (SEO / GEO)</span>
+          <svg class="chev w-4 h-4 transition" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" stroke="#0d0d0d" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+        </summary>
+        <div class="px-5 pb-5 text-sm">
+          <div class="rounded-xl bg-gold-soft px-4 py-3 mb-4 text-xs leading-relaxed flex flex-wrap items-center justify-between gap-2">
+            <p id="deployedState" class="text-muted">홈페이지 목록 불러오는 중…</p>
+            <button id="reloadDeployedBtn" type="button" class="rounded-full border border-point text-[11px] font-bold px-3 py-1.5 bg-white hover:bg-gold-soft transition">↻ 다시 불러오기</button>
+          </div>
+
+          <p class="text-muted text-xs mb-3 leading-relaxed">
+            글을 고르면 <b class="text-point">홈페이지에 올라가 있는 내용</b>을 불러옵니다. 고치는 내용은 이 브라우저에 임시저장되고,
+            화면 맨 아래 <b class="text-point">[발행 전 확인]</b>에서 확인한 뒤 <b class="text-point">[발행하기]</b>를 눌러야 홈페이지에 올라갑니다.
+            발행 전 실제 모양은 오른쪽 <b class="text-point">[미리보기]</b> 탭에서 볼 수 있습니다.
+          </p>
+          <p class="text-muted text-xs mb-3 leading-relaxed">
+            본문은 HTML로 씁니다. 메모장이나 AI 답변을 그대로 붙여 넣었다면 본문 아래 <b class="text-point">[본문 자동 정리]</b>를 누르면 문단·소제목 모양으로 바뀝니다.
+            본문 입력칸 아래 <b class="text-point">[본문 중간 사진]</b>에서 글 사이사이에 사진을 넣을 수 있습니다.
+          </p>
+
+          <div class="flex flex-wrap gap-2 items-center mb-3">
+            <select id="columnSelect" class="rounded-lg border border-line px-3 py-2 text-sm grow min-w-0"></select>
+            <button id="addColumnBtn" type="button" class="rounded-full border border-point text-xs font-bold px-4 py-2 hover:bg-gold-soft transition">+ 새 컬럼</button>
+          </div>
+
+          <div id="draftBar" class="hidden rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 mb-4 text-xs leading-relaxed flex flex-wrap items-center justify-between gap-2">
+            <p id="draftBarText"></p>
+            <div class="flex gap-2">
+              <button id="loadOtherTabBtn" type="button" class="hidden rounded-full border border-amber-400 bg-white text-[11px] font-bold px-3 py-1.5 hover:bg-amber-100 transition">다른 탭 내용 불러오기</button>
+              <button id="discardDraftBtn" type="button" class="rounded-full border border-amber-400 bg-white text-[11px] font-bold px-3 py-1.5 hover:bg-amber-100 transition">되돌리기</button>
+            </div>
+          </div>
+
+          <div id="columnFields" class="space-y-3"></div>
+
+          <div class="mt-6 border-t border-line pt-4 flex flex-wrap items-center justify-between gap-3">
+            <p class="text-xs font-bold">다 쓰셨으면 화면 맨 아래 <span class="text-gold">[발행 전 확인]</span>을 누르세요</p>
+            <button id="delColumnBtn" type="button" class="hidden rounded-full border border-red-300 text-red-600 text-xs font-bold px-4 py-2 hover:bg-red-50 transition">이 글 삭제</button>
+          </div>
+        </div>
+      </details>
+
+      <button id="resetBtn" type="button" class="text-xs text-muted underline hover:text-point">1~7번 설정을 기본값으로 초기화</button>
+    </div>
+
+    <!-- ============ 출력 패널 ============ -->
+    <div class="lg:sticky lg:top-24 space-y-3">
+      <div class="flex flex-wrap gap-2">
+        <button class="out-tab active rounded-full border border-gold bg-gold-soft px-4 py-2 text-xs font-bold" data-out="outPreview">미리보기</button>
+        <button class="out-tab rounded-full border border-gold bg-gold-soft px-4 py-2 text-xs font-bold" data-out="outColumnCards">발행 후 목록</button>
+        <button class="out-tab rounded-full border border-gold bg-gold-soft px-4 py-2 text-xs font-bold" data-out="outColumnPage">컬럼 페이지 코드</button>
+        <button class="out-tab rounded-full border border-point px-4 py-2 text-xs font-bold" data-out="outSeo">SEO 메타태그</button>
+        <button class="out-tab rounded-full border border-point px-4 py-2 text-xs font-bold" data-out="outJsonld">구조화 데이터</button>
+        <button class="out-tab rounded-full border border-point px-4 py-2 text-xs font-bold" data-out="outRobots">robots.txt</button>
+        <button class="out-tab rounded-full border border-point px-4 py-2 text-xs font-bold" data-out="outLlms">llms.txt</button>
+        <button class="out-tab rounded-full border border-point px-4 py-2 text-xs font-bold" data-out="outSitemap">sitemap.xml</button>
+      </div>
+
+      <div id="outPreview" class="out-panel rounded-2xl bg-white border border-line p-3">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-2 px-1">
+          <p id="previewNote" class="text-xs text-muted leading-relaxed">편집 중인 글이 홈페이지에서 어떻게 보일지 미리 보여줍니다. (사진은 저장소에 올라간 것만 보입니다)</p>
+          <button id="previewRefreshBtn" type="button" class="rounded-full border border-line text-[11px] font-bold px-3 py-1.5 hover:bg-gold-soft transition">↻ 새로고침</button>
+        </div>
+        <iframe id="previewFrame" title="컬럼 미리보기" class="w-full rounded-xl border border-line bg-white" style="height:72vh" sandbox="allow-scripts"></iframe>
+      </div>
+
+      <div id="outSeo" class="out-panel hidden rounded-2xl bg-point text-white p-5">
+        <div class="flex justify-end gap-2 mb-2">
+          <button type="button" class="copy-btn rounded-full bg-gold text-point text-xs font-bold px-3 py-1.5" data-target="codeSeo">복사</button>
+        </div>
+        <pre id="codeSeo" class="code text-xs leading-relaxed"></pre>
+      </div>
+
+      <div id="outJsonld" class="out-panel hidden rounded-2xl bg-point text-white p-5">
+        <div class="flex justify-end gap-2 mb-2">
+          <button type="button" class="copy-btn rounded-full bg-gold text-point text-xs font-bold px-3 py-1.5" data-target="codeJsonld">복사</button>
+        </div>
+        <pre id="codeJsonld" class="code text-xs leading-relaxed"></pre>
+      </div>
+
+      <div id="outRobots" class="out-panel hidden rounded-2xl bg-point text-white p-5">
+        <div class="flex justify-end gap-2 mb-2">
+          <button type="button" class="copy-btn rounded-full bg-gold text-point text-xs font-bold px-3 py-1.5" data-target="codeRobots">복사</button>
+          <button type="button" class="dl-btn rounded-full border border-white/50 text-white text-xs font-bold px-3 py-1.5" data-target="codeRobots" data-filename="robots.txt">다운로드</button>
+        </div>
+        <pre id="codeRobots" class="code text-xs leading-relaxed"></pre>
+      </div>
+
+      <div id="outLlms" class="out-panel hidden rounded-2xl bg-point text-white p-5">
+        <p class="text-xs text-white/70 mb-2 leading-relaxed">컬럼 목록 부분은 발행할 때 홈페이지 파일에 자동 반영됩니다. 파일 전체를 새로 만들 때만 복사해 쓰세요.</p>
+        <div class="flex justify-end gap-2 mb-2">
+          <button type="button" class="copy-btn rounded-full bg-gold text-point text-xs font-bold px-3 py-1.5" data-target="codeLlms">복사</button>
+          <button type="button" class="dl-btn rounded-full border border-white/50 text-white text-xs font-bold px-3 py-1.5" data-target="codeLlms" data-filename="llms.txt">다운로드</button>
+        </div>
+        <pre id="codeLlms" class="code text-xs leading-relaxed"></pre>
+      </div>
+
+      <div id="outSitemap" class="out-panel hidden rounded-2xl bg-point text-white p-5">
+        <p class="text-xs text-white/70 mb-2 leading-relaxed">발행하면 홈페이지의 sitemap.xml 이 이 내용으로 갱신됩니다 (컬럼 주소만 바뀌고 나머지 주소는 그대로).</p>
+        <div class="flex justify-end gap-2 mb-2">
+          <button type="button" class="copy-btn rounded-full bg-gold text-point text-xs font-bold px-3 py-1.5" data-target="codeSitemap">복사</button>
+        </div>
+        <pre id="codeSitemap" class="code text-xs leading-relaxed"></pre>
+      </div>
+
+      <div id="outColumnPage" class="out-panel hidden rounded-2xl bg-point text-white p-5">
+        <p class="text-xs text-white/70 mb-2 leading-relaxed">
+          편집 중인 컬럼이 발행되면 만들어질 페이지 코드입니다. 발행은 화면 맨 아래 <b class="text-gold">[발행 전 확인]</b>으로 합니다.
+        </p>
+        <div class="flex justify-end gap-2 mb-2">
+          <button type="button" class="copy-btn rounded-full bg-gold text-point text-xs font-bold px-3 py-1.5" data-target="codeColumnPage">복사</button>
+          <button type="button" class="dl-btn rounded-full border border-white/50 text-white text-xs font-bold px-3 py-1.5" data-target="codeColumnPage" data-filename="column.html">다운로드</button>
+        </div>
+        <pre id="codeColumnPage" class="code text-xs leading-relaxed max-h-[60vh] overflow-y-auto"></pre>
+      </div>
+
+      <div id="outColumnCards" class="out-panel hidden rounded-2xl bg-point text-white p-5">
+        <p class="text-xs text-white/70 mb-2 leading-relaxed">
+          홈페이지에 올라가 있는 목록에 지금 편집 중인 글 1개를 합친 모습입니다. 붙여넣을 필요 없이 발행할 때 자동으로 반영됩니다.
+        </p>
+        <pre id="codeColumnCards" class="code text-xs leading-relaxed max-h-[60vh] overflow-y-auto"></pre>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- =========================================================
+     하단 고정 바 (항상 표시)
+========================================================= -->
+<div class="fixed bottom-0 inset-x-0 z-50 bg-point text-white border-t-2 border-gold shadow-soft">
+  <div class="max-w-7xl mx-auto px-6 py-3 flex flex-wrap items-center justify-between gap-3">
+    <div class="text-xs leading-tight min-w-0">
+      <p class="truncate"><span class="text-white/50">편집 중</span> <b id="barColumnName" class="ml-1 text-gold">—</b></p>
+      <p id="barFolderState" class="text-white/50 mt-0.5">GitHub 미연결 — [🔑 GitHub 연결]을 먼저 눌러주세요</p>
+    </div>
+    <div class="flex flex-wrap gap-2">
+      <button id="barGithubBtn" type="button" class="rounded-full border border-white/60 text-white text-xs font-bold px-4 py-2.5 hover:bg-white hover:text-point transition">
+        🔑 GitHub 연결
+      </button>
+      <button id="barPublishBtn" type="button" class="rounded-full bg-gold text-point text-sm font-bold px-6 py-2.5 hover:bg-white transition disabled:opacity-50">
+        발행 전 확인
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="modalRoot"></div>
+
+<div id="toast" class="fixed bottom-24 left-1/2 -translate-x-1/2 z-[80] bg-gold text-point text-sm font-bold px-5 py-3 rounded-full shadow-soft opacity-0 pointer-events-none transition">복사되었습니다</div>
+
+<!-- 지점별 설정 (이 파일만 지점마다 다릅니다) -->
+<script src="site-config.js"></script>
+<!-- 컬럼 핵심 로직 (병합·파일명·페이지 생성) -->
+<script src="columns-core.js"></script>
+
+<script>
+const C = window.HooColumns;
+const SITE = C.SITE;
+const esc = C.esc;
+
+// 1~7번 설정은 이 브라우저에만 둔다 (코드 생성용).
+// 컬럼 목록은 여기에 두지 않는다 — 원본은 홈페이지 저장소의 columns/index.json 이다.
+const SETTINGS_KEY = SITE.storagePrefix + '_admin_settings_v2';
+const LEGACY_STATE_KEY = SITE.storagePrefix + '_admin_state_v1';   // v1 저장값: 설정만 가져오고 그 안의 컬럼 목록은 쓰지 않는다
+const DRAFT_PREFIX = SITE.storagePrefix + '_admin_draft_v2:';      // 발행 전 임시저장본 — 글마다 따로 저장 (탭끼리 덮어쓰지 않게)
+const LEGACY_DRAFTS_KEY = SITE.storagePrefix + '_admin_drafts_v2'; // v2.0이 한 덩어리로 저장하던 것 → 글별로 나눠 옮긴다
+const TAB_ID = Math.random().toString(36).slice(2);                 // 다른 탭에서 같은 글을 고치는지 알아보는 표시
+const RAW_BASE = 'https://raw.githubusercontent.com/' + SITE.github.owner + '/' + SITE.github.repo + '/' + SITE.github.branch + '/';
+
+const defaultState = window.HOO_DEFAULT_SETTINGS;
+
+document.title = SITE.bizName + ' 관리 도구 ' + C.VERSION;
+document.getElementById('hdrTitle').innerHTML = esc(SITE.bizName) + ' <span class="text-gold">관리 도구</span> <span class="text-[11px] font-bold text-muted align-middle">' + esc(C.VERSION) + '</span>';
+document.getElementById('hdrSiteLink').href = SITE.domain;
+
+let state = loadSettings();
+
+// 홈페이지 저장소에서 읽어 온 목록 (github-publish.js 의 loadDeployed()가 채운다)
+let deployed = {loaded: false, index: [], paths: new Map(), headSha: '', texts: {}};
+// 발행 전 임시저장본: key('slug:column-04' 또는 'new:1726…') → {isNew, baseSha, data, savedAt, tab}
+let drafts = loadDrafts();
+// 지금 편집 중인 글: {key, isNew, baseSha, data}
+let current = null;
+// 다른 탭에서 지금 글을 고쳤다는 표시
+let otherTabDraft = null;
+
+function loadSettings(){
+  const parse = raw => {
+    try {
+      const saved = JSON.parse(raw);
+      if (!saved || typeof saved !== 'object') return null;
+      delete saved.columns;   // 옛 버전이 브라우저에 두던 컬럼 목록은 쓰지 않는다
+      return Object.assign(JSON.parse(JSON.stringify(defaultState)), saved);
+    } catch (e) { return null; }
+  };
+  let saved = null;
+  try { saved = parse(localStorage.getItem(SETTINGS_KEY)) || parse(localStorage.getItem(LEGACY_STATE_KEY)); } catch (e) {}
+  const s = saved || JSON.parse(JSON.stringify(defaultState));
+  if (!s.siteDomain) s.siteDomain = defaultState.siteDomain;
+  return s;
+}
+
+function saveSettings(){
+  try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(state)); } catch (e) {}
+}
+
+/* ---------- 임시저장본 (글마다 따로) ---------- */
+
+function isEmptyDraft(data){
+  const d = C.normalizeColumn(data);
+  return !C.flat(d.title) && !d.body.trim() && !C.flat(d.cardSummary) && !C.flat(d.description) && !d.bodyImages.some(im => im.src);
+}
+
+function loadDrafts(){
+  const out = {};
+  try {
+    // v2.0이 한 덩어리로 저장한 임시저장본을 글별로 옮긴다
+    const legacy = JSON.parse(localStorage.getItem(LEGACY_DRAFTS_KEY) || 'null');
+    if (legacy && typeof legacy === 'object') {
+      Object.keys(legacy).forEach(k => {
+        if (!localStorage.getItem(DRAFT_PREFIX + k)) localStorage.setItem(DRAFT_PREFIX + k, JSON.stringify(legacy[k]));
+      });
+      localStorage.removeItem(LEGACY_DRAFTS_KEY);
+    }
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (!k || k.indexOf(DRAFT_PREFIX) !== 0) continue;
+      try {
+        const d = JSON.parse(localStorage.getItem(k));
+        if (d && d.data) out[k.slice(DRAFT_PREFIX.length)] = d;
+      } catch (e) {}
+    }
+  } catch (e) {}
+  // 아무것도 쓰지 않은 빈 새 글은 남기지 않는다
+  Object.keys(out).forEach(k => { if (out[k].isNew && isEmptyDraft(out[k].data)) removeDraft(k, out); });
+  return out;
+}
+
+function saveDraft(key){
+  try { localStorage.setItem(DRAFT_PREFIX + key, JSON.stringify(drafts[key])); } catch (e) {}
+}
+
+function removeDraft(key, map){
+  delete (map || drafts)[key];
+  try { localStorage.removeItem(DRAFT_PREFIX + key); } catch (e) {}
+}
+
+// 편집할 때마다 이 브라우저에 임시저장 (홈페이지에는 [발행하기]를 눌러야 반영)
+function touchDraft(){
+  if (!current) return;
+  if (current.isNew && isEmptyDraft(current.data)) {
+    // 아직 아무것도 쓰지 않은 새 글은 저장하지 않는다 (빈 임시저장본이 쌓이지 않게)
+    if (drafts[current.key]) { removeDraft(current.key); renderColumnSelect(); }
+    return;
+  }
+  const first = !drafts[current.key];
+  drafts[current.key] = {isNew: current.isNew, baseSha: current.baseSha, data: current.data, savedAt: new Date().toISOString(), tab: TAB_ID};
+  saveDraft(current.key);
+  otherTabDraft = null;
+  if (first) { renderColumnSelect(); updateDraftBar(); }
+}
+
+// 다른 탭(창)에서 임시저장본이 바뀌면 여기에도 반영한다
+window.addEventListener('storage', e => {
+  if (!e.key || e.key.indexOf(DRAFT_PREFIX) !== 0) return;
+  const key = e.key.slice(DRAFT_PREFIX.length);
+  let d = null;
+  try { d = JSON.parse(e.newValue); } catch (_) {}
+  if (d && d.data) drafts[key] = d; else delete drafts[key];
+  if (current && current.key === key && d && d.tab !== TAB_ID) {
+    otherTabDraft = d;   // 이 탭의 내용은 그대로 두고, 알려만 준다
+    updateDraftBar();
+  }
+  renderColumnSelect();
+});
+
+function otherNewDraftSlugs(){
+  return Object.keys(drafts)
+    .filter(k => drafts[k].isNew && (!current || k !== current.key))
+    .map(k => drafts[k].data.slug);
+}
+
+/* ---------- 코드 생성 (1~7번) ---------- */
+
+function domainOrPlaceholder(){
+  return (state.siteDomain || 'https://YOUR-DOMAIN.com/').trim();
+}
+
+function resolvedImage(){
+  if (state.ogImage) return state.ogImage;
+  return domainOrPlaceholder().replace(/\/$/, '') + '/assets/images/hero-main.jpg';
+}
+
+function buildSEO(){
+  const domain = domainOrPlaceholder();
+  const img = resolvedImage();
+  const verify = [
+    state.naverVerify  ? `<meta name="naver-site-verification" content="${esc(state.naverVerify.trim())}" />`  : '',
+    state.googleVerify ? `<meta name="google-site-verification" content="${esc(state.googleVerify.trim())}" />` : '',
+  ].filter(Boolean).join('\n');
+  return `${verify ? verify + '\n\n' : ''}<title>${esc(state.seoTitle)}</title>
+<meta name="description" content="${esc(state.seoDescription)}">
+<meta name="keywords" content="${esc(state.seoKeywords)}">
+<link rel="canonical" href="${esc(domain)}">
+
+<meta property="og:type" content="${esc(state.ogType)}">
+<meta property="og:site_name" content="${esc(state.ogSiteName)}">
+<meta property="og:title" content="${esc(state.seoTitle)}">
+<meta property="og:description" content="${esc(state.seoDescription)}">
+<meta property="og:url" content="${esc(domain)}">
+<meta property="og:image" content="${esc(img)}">
+<meta property="og:locale" content="ko_KR">
+
+<meta name="twitter:card" content="${esc(state.twitterCard)}">
+<meta name="twitter:title" content="${esc(state.seoTitle)}">
+<meta name="twitter:description" content="${esc(state.seoDescription)}">
+<meta name="twitter:image" content="${esc(img)}">`;
+}
+
+function buildJSONLD(){
+  const domain = domainOrPlaceholder();
+  const dayNameMap = {Mo:'Monday', Tu:'Tuesday', We:'Wednesday', Th:'Thursday', Fr:'Friday', Sa:'Saturday', Su:'Sunday'};
+  const openingHoursSpecification = state.hours.filter(h => !h.closed).map(h => ({
+    "@type": "OpeningHoursSpecification",
+    "dayOfWeek": `https://schema.org/${dayNameMap[h.code]}`,
+    "opens": h.open,
+    "closes": h.close,
+  }));
+
+  const clinic = {
+    "@type": "MedicalClinic",
+    "name": state.bizName,
+    "url": domain,
+    "image": resolvedImage(),
+    "telephone": state.bizPhone,
+    "priceRange": state.bizPriceRange,
+    "medicalSpecialty": state.bizSpecialty,
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": state.bizStreet,
+      "addressLocality": state.bizCity,
+      "addressRegion": state.bizRegion,
+      "postalCode": state.bizPostal || undefined,
+      "addressCountry": "KR",
+    },
+    "openingHoursSpecification": openingHoursSpecification,
+    "employee": state.bizDoctor ? [{"@type": "Physician", "name": state.bizDoctor}] : undefined,
+  };
+  if (state.bizLat && state.bizLng) {
+    clinic.geo = {"@type": "GeoCoordinates", "latitude": Number(state.bizLat), "longitude": Number(state.bizLng)};
+  }
+
+  const faq = {
+    "@type": "FAQPage",
+    "mainEntity": state.faqItems.filter(f => f.q && f.a).map(f => ({
+      "@type": "Question",
+      "name": f.q,
+      "acceptedAnswer": {"@type": "Answer", "text": f.a},
+    })),
+  };
+
+  const graph = {"@context": "https://schema.org", "@graph": [clinic, faq]};
+  return `<script type="application/ld+json">\n${JSON.stringify(graph, null, 2)}\n<\/script>`;
+}
+
+function buildRobots(){
+  const domain = domainOrPlaceholder().replace(/\/$/, '');
+  const lines = ['User-agent: *', 'Allow: /', '', `Sitemap: ${domain}/sitemap.xml`, ''];
+  state.bots.forEach(b => {
+    lines.push(`User-agent: ${b.name}`);
+    lines.push(b.allow ? 'Allow: /' : 'Disallow: /');
+    lines.push('');
+  });
+  return lines.join('\n').trim() + '\n';
+}
+
+// 발행하면 홈페이지 목록이 이렇게 된다: 배포된 목록 + 편집 중인 글 1개 (미리보기 전용)
+function previewList(){
+  const list = deployed.index.slice();
+  if (!current) return list;
+  const card = C.cardFields(current.data);
+  const i = list.findIndex(c => c.slug === card.slug);
+  if (current.isNew) { if (i < 0) list.push(card); }
+  else if (i >= 0) list[i] = card;
+  return list;
+}
+
+function buildLLMS(){
+  const domain = domainOrPlaceholder().replace(/\/$/, '');
+  const sections = [
+    ['편평사마귀란', '#about'], ['치료방법', '#treatment'], ['비용', '#cost'],
+    ['전후사진', '#cases'], ['의료진 소개', '#doctor'],
+    ['자주 묻는 질문', '#faq'], ['상담 및 예약', '#consult'],
+  ];
+  const hoursText = state.hours.map(h => h.closed ? `${h.day} 휴진` : `${h.day} ${h.open}-${h.close}`).join(', ');
+
+  let out = `# ${state.bizName}\n\n> ${state.llmsSummary}\n`;
+  if (state.llmsDetail) out += `\n${state.llmsDetail}\n`;
+  out += `\n## 주요 정보\n`;
+  sections.forEach(([label, anchor]) => { out += `- [${label}](${domain}/${anchor})\n`; });
+  out += `\n## 원장 컬럼\n`;
+  out += `- [원장 컬럼 목록](${domain}/columns.html)\n`;
+  previewList().forEach(c => {
+    const sum = C.flat(c.cardSummary);
+    out += `- [${C.flat(c.title)}](${domain}/columns/${c.slug}.html)${sum ? ': ' + sum : ''}\n`;
+  });
+
+  out += `\n## 병원 정보\n- 주소: ${state.bizRegion} ${state.bizCity} ${state.bizStreet}\n- 전화: ${state.bizPhone}\n- 진료시간: ${hoursText}\n`;
+  return out;
+}
+
+function buildSitemap(){
+  if (!deployed.loaded) return '홈페이지 목록을 불러오면 표시됩니다.';
+  return C.mergeSitemap(deployed.texts.sitemap || '', previewList(), C.todayLocal());
+}
+
+/* =========================================================
+   원장 컬럼 편집
+========================================================= */
+
+function renderColumnSelect(){
+  const sel = document.getElementById('columnSelect');
+  sel.innerHTML = '';
+  const add = (value, text, disabled) => {
+    const opt = document.createElement('option');
+    opt.value = value;
+    opt.textContent = text;
+    if (disabled) opt.disabled = true;
+    sel.appendChild(opt);
+    return opt;
+  };
+
+  add('', deployed.loaded ? '— 고칠 글을 고르세요 —' : '— GitHub 연결 후 홈페이지 목록을 불러옵니다 —', true);
+
+  const listed = new Set();
+  deployed.index.forEach((c, i) => {
+    const key = 'slug:' + c.slug;
+    listed.add(key);
+    add(key, `${i + 1}. ${c.title || '(제목 없음)'}${drafts[key] ? '  ✎ 고친 내용 있음' : ''}`);
+  });
+  Object.keys(drafts).forEach(key => {
+    const d = drafts[key];
+    if (d.isNew) add(key, `새 글 · ${d.data.title || '(제목 없음)'}  (미발행)`);
+    else if (!listed.has(key) && deployed.loaded) add(key, `⚠ 홈페이지 목록에 없는 글의 임시저장본 · ${d.data.title || d.data.slug}`);
+  });
+  if (current && current.isNew && !drafts[current.key]) add(current.key, '새 글 · (작성 중)');
+
+  sel.value = current ? current.key : '';
+}
+
+async function selectColumn(key){
+  if (!key) return;
+  if (drafts[key]) {
+    const d = drafts[key];
+    current = {key: key, isNew: !!d.isNew, baseSha: d.baseSha || null, data: C.normalizeColumn(d.data)};
+  } else if (key.indexOf('slug:') === 0) {
+    const slug = key.slice(5);
+    document.getElementById('columnFields').innerHTML = '<p class="text-muted text-xs">홈페이지에서 글을 불러오는 중…</p>';
+    try {
+      const r = await ghLoadColumn(slug);
+      current = {key: key, isNew: false, baseSha: r.sha, data: r.data};
+    } catch (e) {
+      alert('글을 불러오지 못했습니다.\n\n' + e.message);
+      current = null;
+    }
+  } else {
+    return;   // 이미 지워진 새 글
+  }
+  otherTabDraft = null;
+  renderColumnSelect();
+  renderColumnFields();
+  renderAll();
+}
+
+function updateDraftBar(){
+  const bar = document.getElementById('draftBar');
+  const text = document.getElementById('draftBarText');
+  const loadBtn = document.getElementById('loadOtherTabBtn');
+  const discardBtn = document.getElementById('discardDraftBtn');
+  const show = !!current && (current.isNew || !!drafts[current.key] || !!otherTabDraft);
+  bar.classList.toggle('hidden', !show);
+  if (!show) return;
+  loadBtn.classList.toggle('hidden', !otherTabDraft);
+  if (otherTabDraft) {
+    text.innerHTML = '<b>다른 탭(창)에서도 이 글을 고치고 있습니다.</b> 이 탭에서 계속 고치면 그쪽 내용이 이 탭의 내용으로 바뀝니다. 그쪽 내용을 이어서 쓰려면 [다른 탭 내용 불러오기]를 누르세요.';
+  } else if (current.isNew) {
+    text.textContent = '아직 홈페이지에 없는 새 글입니다. 이 브라우저에만 임시저장되어 있고, [발행 전 확인] → [발행하기]를 눌러야 올라갑니다.';
+  } else {
+    text.textContent = '고친 내용이 이 브라우저에 임시저장되어 있습니다. 아직 홈페이지에는 반영되지 않았습니다.';
+  }
+  discardBtn.textContent = current.isNew ? '임시저장 지우기' : '고친 내용 되돌리기';
+}
+
+function loadOtherTab(){
+  if (!current || !otherTabDraft) return;
+  current.data = C.normalizeColumn(otherTabDraft.data);
+  current.baseSha = otherTabDraft.baseSha || current.baseSha;
+  otherTabDraft = null;
+  renderColumnFields();
+  renderAll();
+  showToast('다른 탭의 내용을 불러왔습니다');
+}
+
+async function discardDraft(){
+  if (!current) return;
+  const msg = current.isNew
+    ? '이 새 글의 임시저장본을 지울까요?\n(홈페이지에는 아직 올라가지 않은 글입니다)'
+    : '고친 내용을 버리고 홈페이지에 올라가 있는 내용으로 되돌릴까요?';
+  if (!confirm(msg)) return;
+  const key = current.key;
+  removeDraft(key);
+  current = null;
+  otherTabDraft = null;
+  if (deployed.index.some(c => 'slug:' + c.slug === key)) {
+    await selectColumn(key);
+  } else {
+    renderColumnSelect(); renderColumnFields(); renderAll();
+  }
+}
+
+function addColumn(){
+  if (!deployed.loaded) {
+    alert('먼저 화면 아래 [🔑 GitHub 연결]로 홈페이지 목록을 불러와 주세요.\n\n새 글의 파일명을 홈페이지에 실제로 있는 파일과 겹치지 않게 정하려면 목록이 필요합니다.');
+    return;
+  }
+  // 저장소에 실제로 있는 파일 + 목록 + 아직 발행 안 한 새 글까지 모두 피해서 번호를 정한다
+  const taken = C.collectSlugs(deployed.paths.keys(), deployed.index);
+  otherNewDraftSlugs().forEach(s => taken.add(s));
+  const t = C.todayLocal();
+  current = {
+    key: 'new:' + Date.now(),
+    isNew: true,
+    baseSha: null,
+    data: C.normalizeColumn({
+      slug: C.nextSlug(taken),
+      title: '',
+      category: SITE.defaultCategory,
+      datePublished: t,
+      dateModified: t,
+      image: SITE.defaultImage,
+      schemaType: 'MedicalWebPage',
+      body: '',
+      bodyImages: [],
+    }),
+  };
+  otherTabDraft = null;
+  renderColumnSelect();
+  renderColumnFields();
+  renderAll();
+}
+
+function renderColumnFields(){
+  const wrap = document.getElementById('columnFields');
+  wrap.innerHTML = '';
+  updateDraftBar();
+  document.getElementById('delColumnBtn').classList.toggle('hidden', !current);
+  if (!current) {
+    wrap.innerHTML = `<p class="text-muted text-xs">${deployed.loaded
+      ? '위 목록에서 고칠 글을 고르거나 [+ 새 컬럼]을 눌러 주세요.'
+      : '먼저 화면 아래 [🔑 GitHub 연결]을 눌러 홈페이지 목록을 불러와 주세요.'}</p>`;
+    return;
+  }
+  document.getElementById('delColumnBtn').textContent = current.isNew ? '이 새 글 지우기' : '이 글 삭제';
+
+  const col = current.data;
+  const fields = [
+    {key: 'slug', label: current.isNew ? '파일명 (홈페이지에 있는 파일과 겹치지 않게 자동으로 정했습니다)' : '파일명 (홈페이지 주소라서 바꿀 수 없습니다)', type: 'text', readOnly: !current.isNew},
+    {key: 'title', label: '제목', type: 'text', placeholder: '예: 편평사마귀, 왜 자꾸 번질까요?'},
+    {key: 'category', label: '카테고리 라벨 (예: 편평사마귀)', type: 'text'},
+    {key: 'cardSummary', label: '목록 카드 요약 (2~3줄)', type: 'textarea', rows: 2},
+    {key: 'description', label: 'SEO 메타 설명 (description)', type: 'textarea', rows: 3},
+    {key: 'keywords', label: 'SEO 키워드 (쉼표로 구분)', type: 'text'},
+    {key: 'datePublished', label: '발행일', type: 'date'},
+    {key: 'dateModified', label: current.isNew ? '수정일 (발행일과 같게 자동으로 들어갑니다)' : '수정일 (발행하면 오늘 날짜로 자동으로 바뀝니다)', type: 'date', readOnly: true},
+    {key: 'image', label: '대표 이미지 경로 (프로젝트 루트 기준)', type: 'text'},
+    {key: 'schemaType', label: 'GEO 스키마 타입', type: 'select', options: ['MedicalWebPage', 'Article', 'BlogPosting']},
+    {key: 'body', label: '본문 HTML (&lt;h2&gt; &lt;p&gt; &lt;ul&gt; 사용 — 태그 없이 붙여 넣었다면 아래 [본문 자동 정리])', type: 'textarea', rows: 12, placeholder: '<p>첫 문단</p>\n<h2>소제목</h2>\n<p>내용</p>'},
+  ];
+
+  fields.forEach(f => {
+    const label = document.createElement('label');
+    label.className = 'block';
+
+    const span = document.createElement('span');
+    span.className = 'text-muted text-xs';
+    span.innerHTML = f.label;
+    label.appendChild(span);
+
+    let input;
+    if (f.type === 'textarea') {
+      input = document.createElement('textarea');
+      input.rows = f.rows || 3;
+    } else if (f.type === 'select') {
+      input = document.createElement('select');
+      f.options.forEach(o => {
+        const opt = document.createElement('option');
+        opt.value = o;
+        opt.textContent = o;
+        input.appendChild(opt);
+      });
+    } else {
+      input = document.createElement('input');
+      input.type = f.type;
+    }
+    input.className = 'mt-1 w-full rounded-lg border border-line px-3 py-2' +
+      (f.key === 'body' ? ' font-mono text-xs' : '') +
+      (f.readOnly ? ' bg-[#f7f6f3] text-muted' : '');
+    input.dataset.field = f.key;
+    if (f.placeholder) input.placeholder = f.placeholder;
+    if (f.readOnly) input.readOnly = true;
+    input.value = col[f.key] || '';
+
+    input.addEventListener('input', () => {
+      let v = input.value;
+      if (f.key === 'slug') {
+        v = v.toLowerCase().replace(/[^a-z0-9-]/g, '');
+        if (v !== input.value) input.value = v;
+      }
+      current.data[f.key] = v;
+      touchDraft();
+      if (f.key === 'title') renderColumnSelect();
+      if (f.key === 'body') { refreshPositionSelects(); renderBodyCheck(); }
+      renderAll();
+    });
+
+    label.appendChild(input);
+    wrap.appendChild(label);
+
+    if (f.key === 'body') {
+      const tools = document.createElement('div');
+      tools.className = 'flex flex-wrap items-start gap-2';
+      tools.innerHTML = `
+        <button type="button" id="tidyBodyBtn" class="shrink-0 rounded-full border border-point text-[11px] font-bold px-3 py-1.5 hover:bg-gold-soft transition">본문 자동 정리</button>
+        <div id="bodyCheck" class="grow text-[11px] leading-relaxed"></div>`;
+      tools.querySelector('#tidyBodyBtn').addEventListener('click', () => {
+        const tidy = C.tidyBody(current.data.body);
+        if (tidy === current.data.body) { showToast('정리할 것이 없습니다'); return; }
+        current.data.body = tidy;
+        input.value = tidy;
+        touchDraft();
+        refreshPositionSelects();
+        renderBodyCheck();
+        renderAll();
+        showToast('본문을 정리했습니다');
+      });
+      wrap.appendChild(tools);
+    }
+  });
+
+  wrap.appendChild(buildBodyImageEditor(col));
+  renderBodyCheck();
+  refreshImageDatalist();
+}
+
+// 본문을 고칠 때마다 형식 문제를 바로 보여준다
+function bodyIssues(body){
+  const r = C.checkBodyHtml(body);
+  const errors = r.errors.slice(), warnings = r.warnings.slice();
+  if (body.indexOf('본문을 입력하세요') > -1) errors.unshift('"본문을 입력하세요" 안내 문구가 남아 있습니다.');
+  if (body.indexOf('```') > -1) errors.unshift('``` 코드 표시가 들어 있습니다 (다른 곳에서 복사할 때 딸려온 것).');
+  return {errors, warnings};
+}
+
+function renderBodyCheck(){
+  const el = document.getElementById('bodyCheck');
+  if (!el || !current) return;
+  const body = current.data.body || '';
+  if (!body.trim()) { el.innerHTML = '<span class="text-muted">본문을 입력하면 형식을 검사합니다.</span>'; return; }
+  const r = bodyIssues(body);
+  if (!r.errors.length && !r.warnings.length) { el.innerHTML = '<span class="text-green-700">✓ 본문 형식 이상 없음</span>'; return; }
+  el.innerHTML = r.errors.map(e => `<p class="text-red-600 font-bold">✗ ${esc(e)}</p>`).join('') +
+    r.warnings.map(w => `<p class="text-amber-700">⚠ ${esc(w)}</p>`).join('');
+}
+
+/* --- 본문 중간 사진 편집 UI --- */
+
+function positionOptions(col){
+  const blocks = C.splitBodyBlocks(col.body);
+  const opts = [{value: -1, label: '본문 맨 앞'}];
+  blocks.forEach((b, i) => opts.push({value: i, label: C.blockLabel(b, i)}));
+  return opts;
+}
+
+function fillPositionSelect(sel, col, current){
+  const value = current == null ? sel.value : String(current);
+  sel.innerHTML = '';
+  positionOptions(col).forEach(o => {
+    const opt = document.createElement('option');
+    opt.value = String(o.value);
+    opt.textContent = o.label;
+    sel.appendChild(opt);
+  });
+  sel.value = value;
+  if (!sel.value) sel.value = String(positionOptions(col).slice(-1)[0].value);
+}
+
+function refreshPositionSelects(){
+  if (!current) return;
+  document.querySelectorAll('.body-img-pos').forEach(sel => fillPositionSelect(sel, current.data));
+}
+
+function buildBodyImageEditor(col){
+  const images = C.normalizeBodyImages(col);
+
+  const box = document.createElement('div');
+  box.className = 'mt-5 border-t border-line pt-4';
+  box.innerHTML = `
+    <div class="flex items-center justify-between gap-2">
+      <p class="text-xs font-bold">본문 중간 사진 <span class="font-normal text-muted">(글 사이사이에 들어갑니다)</span></p>
+      <button type="button" id="addBodyImgBtn" class="rounded-full border border-point text-[11px] font-bold px-3 py-1.5 hover:bg-gold-soft transition">+ 사진 추가</button>
+    </div>
+    <p class="text-[11px] text-muted mt-1 leading-relaxed">
+      사진마다 <b class="text-point">알트 태그</b>를 꼭 채워주세요. 검색엔진과 AI는 사진을 글로 읽기 때문에,
+      알트 태그가 이미지 검색 노출과 본문 이해도에 그대로 반영됩니다.
+    </p>
+    <div id="bodyImgRows" class="mt-3 space-y-3"></div>
+    <datalist id="imgList"></datalist>
+  `;
+
+  const rows = box.querySelector('#bodyImgRows');
+
+  const rerender = () => {
+    const fresh = buildBodyImageEditor(current.data);
+    box.replaceWith(fresh);
+    refreshImageDatalist();
+  };
+
+  if (!images.length) {
+    const empty = document.createElement('p');
+    empty.className = 'text-[11px] text-muted';
+    empty.textContent = '아직 추가된 사진이 없습니다. [+ 사진 추가]를 눌러보세요.';
+    rows.appendChild(empty);
+  }
+
+  images.forEach((im, idx) => {
+    const row = document.createElement('div');
+    row.className = 'rounded-xl border border-line p-3 space-y-2 bg-white';
+
+    const head = document.createElement('div');
+    head.className = 'flex items-center justify-between';
+    head.innerHTML = `<span class="text-[11px] font-bold text-gold">사진 ${idx + 1}</span>`;
+    const del = document.createElement('button');
+    del.type = 'button';
+    del.className = 'text-[11px] text-muted underline hover:text-point';
+    del.textContent = '이 사진 빼기';
+    del.addEventListener('click', () => {
+      images.splice(idx, 1);
+      touchDraft();
+      renderAll();
+      rerender();
+    });
+    head.appendChild(del);
+    row.appendChild(head);
+
+    const field = (labelText, key, placeholder, extraNode) => {
+      const l = document.createElement('label');
+      l.className = 'block';
+      const s = document.createElement('span');
+      s.className = 'text-muted text-[11px]';
+      s.textContent = labelText;
+      l.appendChild(s);
+      const i = document.createElement('input');
+      i.type = 'text';
+      i.className = 'mt-1 w-full rounded-lg border border-line px-3 py-2 text-sm';
+      i.placeholder = placeholder || '';
+      i.value = im[key] || '';
+      if (key === 'src') i.setAttribute('list', 'imgList');
+      i.addEventListener('input', () => {
+        im[key] = i.value;
+        if (key === 'alt') markAlt(s, i.value);
+        touchDraft();
+        renderAll();
+      });
+      if (key === 'alt') markAlt(s, i.value);
+      if (extraNode) {
+        const line = document.createElement('div');
+        line.className = 'mt-1 flex gap-2';
+        i.classList.remove('mt-1');
+        line.appendChild(i);
+        line.appendChild(extraNode);
+        l.appendChild(line);
+      } else {
+        l.appendChild(i);
+      }
+      row.appendChild(l);
+      return i;
+    };
+
+    const pickBtn = document.createElement('button');
+    pickBtn.type = 'button';
+    pickBtn.className = 'shrink-0 rounded-lg border border-line text-[11px] font-bold px-3 hover:bg-gold-soft transition';
+    pickBtn.textContent = 'PC에서';
+    const srcInput = field('사진 경로 (예: assets/images/photo-01.jpg)', 'src', 'assets/images/파일명.jpg', pickBtn);
+    pickBtn.addEventListener('click', async () => {
+      const path = await pickImageIntoAssets();
+      if (!path) return;
+      im.src = path;
+      srcInput.value = path;
+      touchDraft();
+      renderAll();
+    });
+
+    field('알트 태그 (사진 설명 — 검색 노출용)', 'alt', '예: ' + SITE.shortName + ' 후한의원 편평사마귀 레이저 시술 장면');
+    field('사진 아래 캡션 (선택)', 'caption', '비워두면 표시되지 않습니다');
+
+    const posLabel = document.createElement('label');
+    posLabel.className = 'block';
+    const posSpan = document.createElement('span');
+    posSpan.className = 'text-muted text-[11px]';
+    posSpan.textContent = '넣을 위치';
+    posLabel.appendChild(posSpan);
+    const pos = document.createElement('select');
+    pos.className = 'body-img-pos mt-1 w-full rounded-lg border border-line px-3 py-2 text-sm';
+    fillPositionSelect(pos, col, im.after == null ? -1 : im.after);
+    pos.addEventListener('change', () => {
+      im.after = Number(pos.value);
+      touchDraft();
+      renderAll();
+    });
+    posLabel.appendChild(pos);
+    row.appendChild(posLabel);
+
+    rows.appendChild(row);
+  });
+
+  box.querySelector('#addBodyImgBtn').addEventListener('click', () => {
+    const blocks = C.splitBodyBlocks(col.body);
+    images.push({
+      src: '',
+      alt: '',
+      caption: '',
+      // 기본 위치: 본문 한가운데
+      after: blocks.length ? Math.floor(blocks.length / 2) - 1 : -1,
+    });
+    touchDraft();
+    renderAll();
+    rerender();
+  });
+
+  return box;
+}
+
+// 알트 태그가 비어 있으면 라벨을 붉게 표시해 빠뜨리지 않게 한다
+function markAlt(span, value){
+  if ((value || '').trim()) {
+    span.className = 'text-muted text-[11px]';
+    span.textContent = '알트 태그 (사진 설명 — 검색 노출용)';
+  } else {
+    span.className = 'text-[11px] text-red-500 font-bold';
+    span.textContent = '알트 태그 (사진 설명 — 검색 노출용) · 비어 있습니다';
+  }
+}
+
+// 사진 목록(자동완성용) — 이름 겹침을 피하는 데도 쓴다
+let knownImages = [];
+
+async function refreshImageDatalist(){
+  const list = document.getElementById('imgList');
+  if (!list) return;
+  try { knownImages = await ghListImages(); } catch (e) { return; }
+  knownImages.sort();
+  list.innerHTML = '';
+  knownImages.forEach(n => {
+    const opt = document.createElement('option');
+    opt.value = 'assets/images/' + n;
+    list.appendChild(opt);
+  });
+}
+
+// 한글·공백 파일명은 주소에서 깨질 수 있어 안전한 이름으로 바꾼다
+function safeImageName(original){
+  const dot = original.lastIndexOf('.');
+  const ext = (dot > -1 ? original.slice(dot) : '.jpg').toLowerCase();
+  const stem = (dot > -1 ? original.slice(0, dot) : original)
+    .replace(/[^a-zA-Z0-9-_]+/g, '-').replace(/^-+|-+$/g, '').toLowerCase();
+  let name = (stem || 'photo-' + Date.now()) + ext;
+  // 같은 이름이 이미 있으면 기존 사진을 덮어쓰지 않도록 번호를 붙인다
+  let n = 2;
+  while (knownImages.includes(name)) {
+    name = (stem || 'photo') + '-' + n + ext;
+    n++;
+  }
+  return name;
+}
+
+function pickImageFile(){
+  return new Promise(resolve => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.addEventListener('change', () => resolve(input.files[0] || null), {once: true});
+    input.click();
+  });
+}
+
+// PC·휴대폰에서 사진을 골라 저장소 assets/images 에 올리고 경로를 돌려준다
+async function pickImageIntoAssets(){
+  await refreshImageDatalist();
+  const file = await pickImageFile();
+  if (!file) return '';
+
+  const mb = file.size / 1024 / 1024;
+  if (mb > 8) { alert('사진 용량이 너무 큽니다 (' + mb.toFixed(1) + 'MB).\n\n8MB 이하로 줄여서 넣어주세요.'); return ''; }
+  if (mb > 2 && !confirm('사진 용량이 ' + mb.toFixed(1) + 'MB 입니다.\n페이지가 느려져 검색 순위에 불리할 수 있어요.\n\n그래도 넣을까요?')) return '';
+
+  const name = safeImageName(file.name);
+  try {
+    const path = await ghUploadImage(file, name);
+    await refreshImageDatalist();
+    showToast('사진을 올렸습니다 — ' + name);
+    return path;
+  } catch (e) {
+    alert('사진을 올리지 못했습니다.\n\n' + e.message);
+    return '';
+  }
+}
+
+/* ---------- 미리보기 ---------- */
+
+let previewDirty = true, previewTimer = null;
+
+function previewVisible(){
+  return !document.getElementById('outPreview').classList.contains('hidden');
+}
+
+function updatePreview(){
+  previewDirty = false;
+  const frame = document.getElementById('previewFrame');
+  const note = document.getElementById('previewNote');
+  if (!current) {
+    frame.srcdoc = '<p style="font-family:sans-serif;color:#5b5b5b;padding:2rem">편집할 컬럼을 고르거나 [+ 새 컬럼]을 눌러 주세요.</p>';
+    return;
+  }
+  // 사진·로고는 저장소(GitHub)에서 바로 읽어오도록 기준 주소를 넣는다
+  const html = C.buildColumnPage(C.normalizeColumn(current.data))
+    .replace('<head>', '<head>\n<base href="' + esc(RAW_BASE + 'columns/') + '">');
+  frame.srcdoc = html;
+  note.textContent = (current.data.title || '(제목 없음)') + ' — 발행 후 홈페이지에서 보일 모양입니다. (방금 올린 사진은 저장소에서 바로 읽어 옵니다)';
+}
+
+function schedulePreview(){
+  previewDirty = true;
+  if (!previewVisible()) return;
+  clearTimeout(previewTimer);
+  previewTimer = setTimeout(updatePreview, 600);
+}
+
+function renderAll(){
+  document.getElementById('codeSeo').textContent = buildSEO();
+  document.getElementById('codeJsonld').textContent = buildJSONLD();
+  document.getElementById('codeRobots').textContent = buildRobots();
+  document.getElementById('codeLlms').textContent = buildLLMS();
+  document.getElementById('codeSitemap').textContent = buildSitemap();
+  document.getElementById('codeColumnPage').textContent = current
+    ? C.buildColumnPage(C.normalizeColumn(current.data))
+    : '편집할 컬럼을 고르거나 [+ 새 컬럼]을 눌러 주세요.';
+  document.getElementById('codeColumnCards').textContent = C.buildColumnCards(previewList());
+  schedulePreview();
+
+  const dlBtn = document.querySelector('.dl-btn[data-target="codeColumnPage"]');
+  if (dlBtn) dlBtn.dataset.filename = (current ? current.data.slug : 'column') + '.html';
+
+  document.getElementById('barColumnName').textContent = current
+    ? `${current.data.title || '(제목 없음)'}  (${current.data.slug}.html)${current.isNew ? ' · 새 글' : ''}`
+    : '편집 중인 글 없음';
+}
+
+function saveAndRender(){
+  saveSettings();
+  renderAll();
+}
+
+function bindSimpleFields(){
+  document.querySelectorAll('[data-bind]').forEach(el => {
+    const key = el.dataset.bind;
+    el.value = state[key] || '';
+    el.oninput = () => { state[key] = el.value; saveAndRender(); };
+  });
+}
+
+function renderHours(){
+  const wrap = document.getElementById('hoursList');
+  wrap.innerHTML = '';
+  state.hours.forEach((h, i) => {
+    const row = document.createElement('div');
+    row.className = 'flex flex-wrap items-center gap-2 rounded-lg border border-line px-3 py-2';
+    row.innerHTML = `
+      <span class="w-8 font-bold">${h.day}</span>
+      <label class="flex items-center gap-1 text-xs text-muted">
+        <input type="checkbox" class="hoursClosed" ${h.closed ? 'checked' : ''}> 휴진
+      </label>
+      <input type="time" class="hoursOpen rounded border border-line px-2 py-1 text-xs" value="${h.open}" ${h.closed ? 'disabled' : ''}>
+      <span class="text-muted text-xs">~</span>
+      <input type="time" class="hoursClose rounded border border-line px-2 py-1 text-xs" value="${h.close}" ${h.closed ? 'disabled' : ''}>
+    `;
+    row.querySelector('.hoursClosed').addEventListener('change', e => {
+      state.hours[i].closed = e.target.checked;
+      row.querySelector('.hoursOpen').disabled = e.target.checked;
+      row.querySelector('.hoursClose').disabled = e.target.checked;
+      saveAndRender();
+    });
+    row.querySelector('.hoursOpen').addEventListener('input', e => { state.hours[i].open = e.target.value; saveAndRender(); });
+    row.querySelector('.hoursClose').addEventListener('input', e => { state.hours[i].close = e.target.value; saveAndRender(); });
+    wrap.appendChild(row);
+  });
+}
+
+function renderBots(){
+  const wrap = document.getElementById('botList');
+  wrap.innerHTML = '';
+  state.bots.forEach((b, i) => {
+    const row = document.createElement('label');
+    row.className = 'flex items-center gap-2 rounded-lg border border-line px-3 py-2 cursor-pointer';
+    row.innerHTML = `<input type="checkbox" ${b.allow ? 'checked' : ''}> <span>${esc(b.label)}</span>`;
+    row.querySelector('input').addEventListener('change', e => { state.bots[i].allow = e.target.checked; saveAndRender(); });
+    wrap.appendChild(row);
+  });
+}
+
+function renderFaqRows(){
+  const wrap = document.getElementById('faqList');
+  wrap.innerHTML = '';
+  state.faqItems.forEach((f, i) => {
+    const row = document.createElement('div');
+    row.className = 'rounded-lg border border-line p-3 space-y-2';
+    row.innerHTML = `
+      <div class="flex justify-between items-center gap-2">
+        <span class="text-xs text-muted font-bold">질문 ${i + 1}</span>
+        <button type="button" class="removeFaqBtn text-xs text-muted underline hover:text-point">삭제</button>
+      </div>
+      <input type="text" class="faqQ w-full rounded-lg border border-line px-3 py-2" placeholder="질문" value="${esc(f.q)}">
+      <textarea class="faqA w-full rounded-lg border border-line px-3 py-2" rows="2" placeholder="답변">${esc(f.a)}</textarea>
+    `;
+    row.querySelector('.faqQ').addEventListener('input', e => { state.faqItems[i].q = e.target.value; saveAndRender(); });
+    row.querySelector('.faqA').addEventListener('input', e => { state.faqItems[i].a = e.target.value; saveAndRender(); });
+    row.querySelector('.removeFaqBtn').addEventListener('click', () => {
+      state.faqItems.splice(i, 1);
+      renderFaqRows();
+      saveAndRender();
+    });
+    wrap.appendChild(row);
+  });
+}
+
+document.getElementById('addFaqBtn').addEventListener('click', () => {
+  state.faqItems.push({q: '', a: ''});
+  renderFaqRows();
+  saveAndRender();
+});
+
+document.getElementById('columnSelect').addEventListener('change', e => selectColumn(e.target.value));
+document.getElementById('addColumnBtn').addEventListener('click', addColumn);
+document.getElementById('discardDraftBtn').addEventListener('click', discardDraft);
+document.getElementById('loadOtherTabBtn').addEventListener('click', loadOtherTab);
+document.getElementById('previewRefreshBtn').addEventListener('click', updatePreview);
+
+// 삭제는 이 버튼을 눌렀을 때만 일어난다. 홈페이지 글은 확인 화면을 한 번 더 거친다.
+document.getElementById('delColumnBtn').addEventListener('click', () => {
+  if (!current) return;
+  if (current.isNew) {
+    if (drafts[current.key] && !confirm('아직 발행하지 않은 새 글입니다. 이 브라우저의 임시저장본을 지울까요?')) return;
+    removeDraft(current.key);
+    current = null;
+    renderColumnSelect(); renderColumnFields(); renderAll();
+    return;
+  }
+  publishDelete(current.data.slug, current.data.title);
+});
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  if (!confirm('1~7번 설정값을 기본값으로 초기화할까요?\n(원장 컬럼과 임시저장본은 그대로 둡니다)')) return;
+  state = JSON.parse(JSON.stringify(defaultState));
+  saveSettings();
+  bindSimpleFields();
+  renderHours();
+  renderBots();
+  renderFaqRows();
+  renderAll();
+});
+
+document.querySelectorAll('.out-tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.out-tab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.out-panel').forEach(p => p.classList.add('hidden'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.out).classList.remove('hidden');
+    if (btn.dataset.out === 'outPreview' && previewDirty) updatePreview();
+  });
+});
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.remove('opacity-0');
+  t.classList.add('opacity-100');
+  clearTimeout(showToast._timer);
+  showToast._timer = setTimeout(() => {
+    t.classList.remove('opacity-100');
+    t.classList.add('opacity-0');
+  }, 1500);
+}
+
+function fallbackCopy(text){
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.left = '-9999px';
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand('copy'); } catch (e) {}
+  document.body.removeChild(ta);
+}
+
+function copyText(text, msg){
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text).then(() => showToast(msg || '복사되었습니다')).catch(() => { fallbackCopy(text); showToast(msg || '복사되었습니다'); });
+  } else {
+    fallbackCopy(text);
+    showToast(msg || '복사되었습니다');
+  }
+}
+
+function downloadText(text, filename){
+  const blob = new Blob([text], {type: 'text/plain;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast(filename + ' 저장됨');
+}
+
+document.querySelectorAll('.copy-btn').forEach(btn => {
+  btn.addEventListener('click', () => copyText(document.getElementById(btn.dataset.target).textContent));
+});
+
+document.querySelectorAll('.dl-btn').forEach(btn => {
+  btn.addEventListener('click', () => downloadText(document.getElementById(btn.dataset.target).textContent, btn.dataset.filename));
+});
+
+bindSimpleFields();
+renderHours();
+renderBots();
+renderFaqRows();
+renderColumnSelect();
+renderColumnFields();
+renderAll();
+</script>
+
+<!-- GitHub 발행 (홈페이지 목록 불러오기 · 병합 발행 · 사진 올리기) -->
+<script src="github-publish.js"></script>
+
+</body>
+</html>
