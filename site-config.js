@@ -30,6 +30,14 @@
     github: { owner: 'gkwngml1215-code', repo: 'jewart', branch: 'main' },
     tokenKey: 'hoo-jeju-admin-gh-token',   // 이 브라우저에 GitHub 키를 저장하는 이름
     storagePrefix: 'hoojeju',              // 이 브라우저에 설정·임시저장본을 저장하는 이름 앞부분
+    // 컬럼 하단 "감수 원장" 박스 · 구조화 데이터(reviewedBy)에 쓰는 값
+    reviewer: {
+      name: '이경원', title: '대표원장', license: '한의사',
+      photo: 'assets/images/doctor-lee.jpg',
+      bio: '가천대학교 한의과대학 졸업 · 대한한방피부과학회 정회원 · 대한약침학회 정회원 · 대한 트랜스테라피 연구회 정회원',
+    },
+    // GEO 작성원칙: 참고자료 3개에 반드시 들어가야 하는 출처 (발행 전 검사)
+    referenceSources: ['대한피부과학회', 'DermNet', 'NHS'],
   };
 
   // 1~7번 SEO 설정 기본값 (이 브라우저에 저장된 값이 없을 때 쓰임)
