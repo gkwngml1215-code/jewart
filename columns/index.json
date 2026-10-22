@@ -3,6 +3,15 @@
   "about": "원장 컬럼 목록의 원본입니다. 관리 도구가 발행할 때 이 파일을 먼저 읽고 파일명(slug) 기준으로 병합합니다. 직접 고칠 때는 다른 글이 빠지지 않게 주의하세요.",
   "columns": [
     {
+      "slug": "seborrheic-keratosis-vs-flat-wart",
+      "title": "제주 검버섯(지루각화증)과 편평사마귀, 진료실에서는 어떻게 구분하나요?",
+      "category": "편평사마귀",
+      "cardSummary": "막 생긴 검버섯은 편평사마귀와 닮아 헷갈리기 쉽습니다. 원인·색·표면·번지는 방식의 차이와 진료실에서 확인하는 항목을 정리했습니다.",
+      "image": "assets/images/doctor-lee.jpg",
+      "datePublished": "2026-10-23",
+      "dateModified": "2026-10-23"
+    },
+    {
       "slug": "flat-wart-shaving-makeup-scrub",
       "title": "제주 편평사마귀, 면도·화장·스크럽이 번짐을 부르는 이유는?",
       "category": "편평사마귀",
