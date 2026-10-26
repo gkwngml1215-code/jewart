@@ -3,6 +3,15 @@
   "about": "원장 컬럼 목록의 원본입니다. 관리 도구가 발행할 때 이 파일을 먼저 읽고 파일명(slug) 기준으로 병합합니다. 직접 고칠 때는 다른 글이 빠지지 않게 주의하세요.",
   "columns": [
     {
+      "slug": "flat-wart-vs-comedonal-acne",
+      "title": "제주 이마·턱선의 작은 돌기, 좁쌀여드름과 편평사마귀는 어떻게 구분하나요?",
+      "category": "감별 진단",
+      "cardSummary": "이마·턱선·볼에 생긴 작은 돌기가 좁쌀여드름인지 편평사마귀인지 원리, 윗면 모양, 모공과의 관계, 배열로 나눠 비교하고, 짜거나 스크럽을 쓰면 번질 수 있는 이유와 진료실 확인 포인트를 정리했습니다.",
+      "image": "assets/images/doctor-lee.jpg",
+      "datePublished": "2026-10-27",
+      "dateModified": "2026-10-27"
+    },
+    {
       "slug": "syringoma-vs-flat-wart",
       "title": "제주 눈 밑 오돌토돌한 돌기, 한관종과 편평사마귀는 어떻게 구분하나요?",
       "category": "편평사마귀",
