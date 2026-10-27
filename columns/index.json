@@ -3,6 +3,15 @@
   "about": "원장 컬럼 목록의 원본입니다. 관리 도구가 발행할 때 이 파일을 먼저 읽고 파일명(slug) 기준으로 병합합니다. 직접 고칠 때는 다른 글이 빠지지 않게 주의하세요.",
   "columns": [
     {
+      "slug": "sebaceous-hyperplasia-vs-flat-wart",
+      "title": "제주 이마·코 주변 노란 돌기, 피지선증식증과 편평사마귀는 어떻게 구분하나요?",
+      "category": "편평사마귀",
+      "cardSummary": "이마와 코 주변의 노르스름한 돌기가 피지선증식증인지 편평사마귀인지 중앙 함몰, 분포, 변화 속도, 옮는 성질로 나눠 비교하고, 진료실 감별 순서와 편평사마귀일 때의 침 치료를 정리했습니다.",
+      "image": "assets/images/doctor-lee.jpg",
+      "datePublished": "2026-10-28",
+      "dateModified": "2026-10-28"
+    },
+    {
       "slug": "flat-wart-vs-comedonal-acne",
       "title": "제주 이마·턱선의 작은 돌기, 좁쌀여드름과 편평사마귀는 어떻게 구분하나요?",
       "category": "감별 진단",
