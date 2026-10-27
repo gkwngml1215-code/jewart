@@ -247,7 +247,7 @@ async function step(name, fn){
     pagesOf(initial).forEach(p => assert.strictEqual(files[p], initial[p], p + ' 가 바뀌면 안 됨'));
     const page = files[C.PATHS.page(next1)];
     assert.ok(page.includes('테스트 본문 첫 문단'));
-    assert.ok(page.includes(C.SITE.domain.replace(/\/$/, '') + '/columns/' + next1 + '.html'), '페이지 주소가 이 지점 도메인이어야 함');
+    assert.ok(page.includes(C.SITE.domain.replace(/\/$/, '') + '/columns/' + next1 + '"'), '페이지 주소가 이 지점 도메인이어야 함');
     assert.ok(page.includes(C.SITE.phone) && page.includes(C.SITE.kakaoUrl), '이 지점 전화·카카오가 들어가야 함');
     assert.ok(files['llms.txt'].includes('columns/' + next1 + '.html'));
     assert.strictEqual(await b.otherRepoCalls(), 0, '다른 저장소로 요청이 가면 안 됨');

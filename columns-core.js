@@ -365,7 +365,7 @@
   function buildColumnPage(col){
     const domain = SITE.domain;
     const base = domain.replace(/\/$/, '');
-    const url = `${base}/columns/${col.slug}.html`;
+    const url = `${base}/columns/${col.slug}`;   // Cloudflare Pages 최종 주소(.html 없음) — canonical·og:url·JSON-LD 에 씀
     const imgPath = (col.image || SITE.defaultImage).replace(/^\//, '');
     const imgAbs = `${base}/${imgPath}`;
     const imgRel = `../${imgPath}`;
@@ -426,7 +426,7 @@
           "@type": "BreadcrumbList",
           "itemListElement": [
             {"@type": "ListItem", "position": 1, "name": "홈", "item": domain},
-            {"@type": "ListItem", "position": 2, "name": "원장 컬럼", "item": `${base}/columns.html`},
+            {"@type": "ListItem", "position": 2, "name": "원장 컬럼", "item": `${base}/columns`},
             {"@type": "ListItem", "position": 3, "name": col.title, "item": url},
           ],
         },
@@ -749,7 +749,7 @@ ${sectionRefs}${sectionFaq}${sectionReviewer}${sectionModified}
   // 컬럼 주소만 새 목록으로 바꾸고, 그 밖의 주소(홈 등)는 있던 그대로 둔다
   function mergeSitemap(xml, list, today){
     const base = SITE.domain.replace(/\/$/, '');
-    const listUrl = base + '/columns.html';
+    const listUrl = base + '/columns';   // 예전 sitemap 의 /columns.html 도 같은 항목으로 본다
     const entry = (loc, lastmod, changefreq, priority) =>
 `  <url>
     <loc>${esc(loc)}</loc>
@@ -757,7 +757,7 @@ ${sectionRefs}${sectionFaq}${sectionReviewer}${sectionModified}
     <changefreq>${changefreq}</changefreq>
     <priority>${priority}</priority>
   </url>`;
-    const isColumnPage = loc => loc.indexOf(base + '/columns/') === 0 && /\.html$/.test(loc);
+    const isColumnPage = loc => loc.indexOf(base + '/columns/') === 0;   // .html 유무 모두 컬럼 주소로 본다
 
     const blocks = String(xml || '').match(/<url>[\s\S]*?<\/url>/g) || [];
     const kept = [];
@@ -765,9 +765,9 @@ ${sectionRefs}${sectionFaq}${sectionReviewer}${sectionModified}
     blocks.forEach(b => {
       const loc = unesc(((b.match(/<loc>([\s\S]*?)<\/loc>/) || [])[1] || '').trim());
       if (isColumnPage(loc)) return;
-      if (loc === listUrl) {
+      if (loc === listUrl || loc === listUrl + '.html') {
         sawList = true;
-        kept.push('  ' + b.replace(/<lastmod>[\s\S]*?<\/lastmod>/, '<lastmod>' + today + '</lastmod>'));
+        kept.push(entry(listUrl, today, 'weekly', '0.8'));   // 예전 .html 주소는 새 주소로 바꿔 둔다
         return;
       }
       kept.push('  ' + b);
@@ -775,7 +775,7 @@ ${sectionRefs}${sectionFaq}${sectionReviewer}${sectionModified}
     if (!blocks.length) kept.push(entry(SITE.domain, today, 'weekly', '1.0'));
     if (!sawList) kept.push(entry(listUrl, today, 'weekly', '0.8'));
 
-    const cols = list.map(c => entry(`${base}/columns/${c.slug}.html`, c.dateModified || c.datePublished, 'monthly', '0.7'));
+    const cols = list.map(c => entry(`${base}/columns/${c.slug}`, c.dateModified || c.datePublished, 'monthly', '0.7'));
     return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${kept.concat(cols).join('\n')}
@@ -789,21 +789,22 @@ ${kept.concat(cols).join('\n')}
     const lines = String(txt || '').replace(/\r\n/g, '\n').split('\n');
     const colLine = c => {
       const sum = flat(c.cardSummary);
-      return `- [${flat(c.title)}](${base}/columns/${c.slug}.html)${sum ? ': ' + sum : ''}`;
+      return `- [${flat(c.title)}](${base}/columns/${c.slug})${sum ? ': ' + sum : ''}`;
     };
-    const isColLink = l => /^- \[.*\]\(.*\/columns\/[^/()]+\.html\)/.test(l);
+    const isColLink = l => /^- \[.*\]\(.*\/columns\/[^/()]+\)/.test(l);   // .html 유무 모두
 
     let start = lines.findIndex(l => l.trim() === '## 원장 컬럼');
     if (start < 0) {
       let at = lines.findIndex(l => l.trim() === '## 병원 정보');
       if (at < 0) at = lines.length;
-      lines.splice(at, 0, '## 원장 컬럼', `- [원장 컬럼 목록](${base}/columns.html)`, '');
+      lines.splice(at, 0, '## 원장 컬럼', `- [원장 컬럼 목록](${base}/columns)`, '');
       start = at;
     }
     let end = lines.findIndex((l, i) => i > start && /^## /.test(l));
     if (end < 0) end = lines.length;
 
-    const keptLines = lines.slice(start + 1, end).filter(l => l.trim() && !isColLink(l));
+    const keptLines = lines.slice(start + 1, end).filter(l => l.trim() && !isColLink(l))
+      .map(l => l.split(`](${base}/columns.html)`).join(`](${base}/columns)`));   // 예전 목록 링크도 새 주소로
     const section = keptLines.concat(list.map(colLine));
     if (end < lines.length) section.push('');
     return lines.slice(0, start + 1).concat(section, lines.slice(end)).join('\n');

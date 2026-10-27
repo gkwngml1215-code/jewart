@@ -240,14 +240,14 @@ test('sitemap: 컬럼이 아닌 주소는 그대로, 목록에서 빠진 옛 컬
   assert.ok(out.includes(`<loc>${DOMAIN}/event.html</loc>`));
   assert.ok(!out.includes('column-99'));
   assert.ok(out.includes('column-01') && out.includes('column-02'));
-  assert.ok(out.includes(`<loc>${DOMAIN}/columns.html</loc>\n    <lastmod>${TODAY}</lastmod>`));
+  assert.ok(out.includes(`<loc>${DOMAIN}/columns</loc>\n    <lastmod>${TODAY}</lastmod>`));   // 예전 /columns.html 항목은 새 주소로
 });
 
 test('llms.txt: "## 원장 컬럼" 구역의 컬럼 줄만 바꾸고 다른 구역은 그대로', () => {
   const out = C.mergeLlms(LLMS, makeSnap(2).index);
   assert.ok(out.startsWith('# 후한의원\n\n> 소개\n'));
-  assert.ok(out.includes(`- [원장 컬럼 목록](${DOMAIN}/columns.html)`));
-  assert.ok(out.includes(`- [글 2](${DOMAIN}/columns/column-02.html): 요약 2`));
+  assert.ok(out.includes(`- [원장 컬럼 목록](${DOMAIN}/columns)`));
+  assert.ok(out.includes(`- [글 2](${DOMAIN}/columns/column-02): 요약 2`));
   assert.ok(out.endsWith('## 병원 정보\n- 전화: 000\n'));
   assert.strictEqual(C.mergeLlms(out, makeSnap(2).index), out, '두 번 해도 같아야 함');
 });
@@ -298,7 +298,8 @@ test('수정일은 발행일보다 앞설 수 없다 · 새 글은 오늘 날짜
 
 test('페이지에 이 지점의 주소·전화·카카오·저작권이 들어간다 (다른 지점 값 섞임 없음)', () => {
   const page = C.buildColumnPage(C.normalizeColumn(draft('column-01')));
-  assert.ok(page.includes(`${DOMAIN}/columns/column-01.html`));
+  assert.ok(page.includes(`href="${DOMAIN}/columns/column-01"`), 'canonical 은 .html 없는 최종 주소');
+  assert.ok(!page.includes(`${DOMAIN}/columns/column-01.html`), '절대 주소에 .html 이 남으면 안 됨');
   assert.ok(page.includes('tel:' + C.SITE.phone));
   assert.ok(page.includes(C.SITE.kakaoUrl));
   assert.ok(page.includes('CLINIC ' + C.SITE.copyright + '.'));

@@ -634,10 +634,10 @@ function buildLLMS(){
   out += `\n## 주요 정보\n`;
   sections.forEach(([label, anchor]) => { out += `- [${label}](${domain}/${anchor})\n`; });
   out += `\n## 원장 컬럼\n`;
-  out += `- [원장 컬럼 목록](${domain}/columns.html)\n`;
+  out += `- [원장 컬럼 목록](${domain}/columns)\n`;
   previewList().forEach(c => {
     const sum = C.flat(c.cardSummary);
-    out += `- [${C.flat(c.title)}](${domain}/columns/${c.slug}.html)${sum ? ': ' + sum : ''}\n`;
+    out += `- [${C.flat(c.title)}](${domain}/columns/${c.slug})${sum ? ': ' + sum : ''}\n`;
   });
 
   out += `\n## 병원 정보\n- 주소: ${state.bizRegion} ${state.bizCity} ${state.bizStreet}\n- 전화: ${state.bizPhone}\n- 진료시간: ${hoursText}\n`;
