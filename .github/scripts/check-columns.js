@@ -45,7 +45,7 @@ if (columns) {
     const html = read(page);
     const h1 = unesc(((/<h1[^>]*>([^<]*)/.exec(html) || [])[1] || '')).trim();
     if (h1 !== String(c.title).trim()) problems.push(`${c.slug}: 페이지 제목("${h1}")이 목록 제목("${c.title}")과 다릅니다`);
-    if (!html.includes(`${domain}/columns/${c.slug}.html`)) problems.push(`${c.slug}: 페이지 안의 주소(canonical)가 자기 주소가 아닙니다`);
+    if (!html.includes(`${domain}/columns/${c.slug}"`) && !html.includes(`${domain}/columns/${c.slug}.html"`)) problems.push(`${c.slug}: 페이지 안의 주소(canonical)가 자기 주소가 아닙니다`);
     if (/새 컬럼 제목|본문을 입력하세요|```/.test(html)) problems.push(`${c.slug}: 페이지에 "새 컬럼 제목"·"본문을 입력하세요"·\`\`\` 흔적이 남아 있습니다`);
     [...html.matchAll(/(?:src|href)="\.\.\/(assets\/images\/[^"]+)"/g)].forEach(m => images.add(m[1]));
   });
@@ -57,12 +57,12 @@ if (columns) {
   if (cards.join() !== slugs.join()) problems.push(`columns.html 카드(${cards.length}개: ${cards.join(', ')})가 목록(${slugs.length}개: ${slugs.join(', ')})과 다릅니다`);
 
   const sitemap = read('sitemap.xml');
-  const smap = [...sitemap.matchAll(/\/columns\/([^/<]+)\.html</g)].map(m => m[1]).sort();
+  const smap = [...sitemap.matchAll(/\/columns\/([^/<]+?)(?:\.html)?</g)].map(m => m[1]).sort();
   if (smap.join() !== slugs.slice().sort().join()) problems.push(`sitemap.xml 의 컬럼 주소(${smap.length}개)가 목록과 다릅니다`);
 
   if (exists('llms.txt')) {
     const llms = read('llms.txt');
-    const lcols = [...llms.matchAll(/\/columns\/([^/()]+)\.html\)/g)].map(m => m[1]).sort();
+    const lcols = [...llms.matchAll(/\/columns\/([^/()]+?)(?:\.html)?\)/g)].map(m => m[1]).sort();
     if (lcols.join() !== slugs.slice().sort().join()) problems.push(`llms.txt 의 컬럼(${lcols.length}개)이 목록과 다릅니다`);
   }
 
