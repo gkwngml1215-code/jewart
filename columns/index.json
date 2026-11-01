@@ -3,6 +3,15 @@
   "about": "원장 컬럼 목록의 원본입니다. 관리 도구가 발행할 때 이 파일을 먼저 읽고 파일명(slug) 기준으로 병합합니다. 직접 고칠 때는 다른 글이 빠지지 않게 주의하세요.",
   "columns": [
     {
+      "slug": "kids-teens-flat-wart-school-care",
+      "title": "제주 아이·청소년 얼굴 편평사마귀, 왜 생기고 학교생활 중에는 어떻게 관리하나요?",
+      "category": "편평사마귀",
+      "cardSummary": "어린이와 청소년 얼굴에 편평사마귀가 잘 생기는 이유를 피부 상처와 만지는 습관으로 설명하고, 여드름·비립종과 구별해 보는 법, 교실·체육 시간·시험 기간의 관리 요령, 보호자가 진료를 결정하면 좋은 시점을 정리했습니다.",
+      "image": "assets/images/doctor-lee.jpg",
+      "datePublished": "2026-11-02",
+      "dateModified": "2026-11-02"
+    },
+    {
       "slug": "flat-wart-hands-fingers",
       "title": "제주 손등·손가락 편평사마귀, 왜 손에 생기고 어떻게 관리하나요?",
       "category": "편평사마귀",
