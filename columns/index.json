@@ -3,6 +3,15 @@
   "about": "원장 컬럼 목록의 원본입니다. 관리 도구가 발행할 때 이 파일을 먼저 읽고 파일명(slug) 기준으로 병합합니다. 직접 고칠 때는 다른 글이 빠지지 않게 주의하세요.",
   "columns": [
     {
+      "slug": "flat-wart-sun-outdoor-activity-visibility",
+      "title": "제주 편평사마귀, 올레길·바닷가 야외활동 뒤에 얼굴과 팔에서 더 눈에 띄는 이유는?",
+      "category": "편평사마귀",
+      "cardSummary": "햇볕과 바닷바람, 땀을 닦고 선크림을 바르고 지우는 마찰이 겹치면 얼굴·팔의 편평사마귀가 더 또렷해 보이거나 번질 수 있습니다. 야외활동 전후 관리와 침 치료 기간에 일정을 조절하는 방법을 정리했습니다.",
+      "image": "assets/images/doctor-lee.jpg",
+      "datePublished": "2026-11-09",
+      "dateModified": "2026-11-09"
+    },
+    {
       "slug": "neck-flat-wart-collar-necklace-friction",
       "title": "제주 목 편평사마귀, 옷깃·목걸이·머플러 마찰로 번질 수 있나요?",
       "category": "편평사마귀",
