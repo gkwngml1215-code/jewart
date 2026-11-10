@@ -3,6 +3,15 @@
   "about": "원장 컬럼 목록의 원본입니다. 관리 도구가 발행할 때 이 파일을 먼저 읽고 파일명(slug) 기준으로 병합합니다. 직접 고칠 때는 다른 글이 빠지지 않게 주의하세요.",
   "columns": [
     {
+      "slug": "flat-wart-fatigue-sleep-stress",
+      "title": "제주 편평사마귀, 잠이 부족하고 피곤한 시기에 왜 늘어나는 것처럼 느껴질까요?",
+      "category": "편평사마귀",
+      "cardSummary": "야근과 밤샘, 긴장이 이어지는 시기에는 몸의 방어력이 흔들리고, 무심코 얼굴을 만지거나 뜯는 습관도 함께 늘어 편평사마귀가 많아진 것처럼 보일 수 있습니다. 피로와 병변의 관계, 생활 관리, 침 치료 기간의 컨디션 관리법을 정리했습니다.",
+      "image": "assets/images/doctor-lee.jpg",
+      "datePublished": "2026-11-11",
+      "dateModified": "2026-11-11"
+    },
+    {
       "slug": "flat-wart-sun-outdoor-activity-visibility",
       "title": "제주 편평사마귀, 올레길·바닷가 야외활동 뒤에 얼굴과 팔에서 더 눈에 띄는 이유는?",
       "category": "편평사마귀",
