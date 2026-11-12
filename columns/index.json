@@ -3,6 +3,15 @@
   "about": "원장 컬럼 목록의 원본입니다. 관리 도구가 발행할 때 이 파일을 먼저 읽고 파일명(slug) 기준으로 병합합니다. 직접 고칠 때는 다른 글이 빠지지 않게 주의하세요.",
   "columns": [
     {
+      "slug": "forehead-hairline-flat-wart-bangs-hat-hair-products",
+      "title": "제주 이마·헤어라인 편평사마귀, 앞머리와 모자·헤어 제품이 번짐에 영향을 줄까요?",
+      "category": "편평사마귀",
+      "cardSummary": "앞머리가 쓸고 지나가는 자리, 모자·헬멧 테두리의 마찰, 왁스·스프레이·염색약, 머리를 자꾸 만지는 손 습관은 이마와 헤어라인의 편평사마귀가 퍼질 여지를 만들 수 있습니다. 일상 속 관리 요령과 침 치료 기간 중 헤어 관리법을 정리했습니다.",
+      "image": "assets/images/doctor-lee.jpg",
+      "datePublished": "2026-11-13",
+      "dateModified": "2026-11-13"
+    },
+    {
       "slug": "flat-wart-fatigue-sleep-stress",
       "title": "제주 편평사마귀, 잠이 부족하고 피곤한 시기에 왜 늘어나는 것처럼 느껴질까요?",
       "category": "편평사마귀",
