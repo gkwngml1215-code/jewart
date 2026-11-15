@@ -3,6 +3,15 @@
   "about": "원장 컬럼 목록의 원본입니다. 관리 도구가 발행할 때 이 파일을 먼저 읽고 파일명(slug) 기준으로 병합합니다. 직접 고칠 때는 다른 글이 빠지지 않게 주의하세요.",
   "columns": [
     {
+      "slug": "flat-wart-swimming-bathhouse-wet-skin",
+      "title": "제주 편평사마귀, 수영장·바다 물놀이나 목욕탕에 다녀오면 더 번질 수 있나요?",
+      "category": "편평사마귀",
+      "cardSummary": "물에 오래 불어 물러진 피부는 작은 문지름에도 틈이 생기기 쉬워, 수영장·바다·목욕탕에 다녀온 뒤 편평사마귀가 번질 여지가 커질 수 있습니다. 장소별 주의점과 공용 수건·발판 관리, 물놀이 후 정리법, 침 치료 기간의 물놀이 시기를 정리했습니다.",
+      "image": "assets/images/doctor-lee.jpg",
+      "datePublished": "2026-11-16",
+      "dateModified": "2026-11-16"
+    },
+    {
       "slug": "forehead-hairline-flat-wart-bangs-hat-hair-products",
       "title": "제주 이마·헤어라인 편평사마귀, 앞머리와 모자·헤어 제품이 번짐에 영향을 줄까요?",
       "category": "편평사마귀",
