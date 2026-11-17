@@ -3,6 +3,15 @@
   "about": "원장 컬럼 목록의 원본입니다. 관리 도구가 발행할 때 이 파일을 먼저 읽고 파일명(slug) 기준으로 병합합니다. 직접 고칠 때는 다른 글이 빠지지 않게 주의하세요.",
   "columns": [
     {
+      "slug": "eyelid-flat-wart-eye-rubbing-makeup-contact-lens",
+      "title": "제주 눈가·눈꺼풀 편평사마귀, 눈 비비기나 화장·렌즈 때문에 더 늘어날 수 있나요?",
+      "category": "편평사마귀",
+      "cardSummary": "눈가는 피부가 얇고 손이 자주 닿아 편평사마귀가 생기고 번지기 쉬운 자리입니다. 눈 비비기·아이 메이크업·렌즈가 주는 영향, 비립종·한관종과의 차이, 생활 관리와 침 치료 시 고려하는 점을 정리했습니다.",
+      "image": "assets/images/doctor-lee.jpg",
+      "datePublished": "2026-11-18",
+      "dateModified": "2026-11-18"
+    },
+    {
       "slug": "flat-wart-swimming-bathhouse-wet-skin",
       "title": "제주 편평사마귀, 수영장·바다 물놀이나 목욕탕에 다녀오면 더 번질 수 있나요?",
       "category": "편평사마귀",
