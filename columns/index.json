@@ -3,6 +3,15 @@
   "about": "원장 컬럼 목록의 원본입니다. 관리 도구가 발행할 때 이 파일을 먼저 읽고 파일명(slug) 기준으로 병합합니다. 직접 고칠 때는 다른 글이 빠지지 않게 주의하세요.",
   "columns": [
     {
+      "slug": "flat-wart-gym-sweat-towel-workout-clothes",
+      "title": "제주 편평사마귀, 운동 후 땀과 헬스장 수건·운동복 마찰이 번짐에 영향을 줄까요?",
+      "category": "편평사마귀",
+      "cardSummary": "땀이 돌기를 만들지는 않지만, 땀에 젖어 물러진 피부를 수건으로 세게 훔치거나 운동복이 같은 자리를 계속 쓸면 편평사마귀가 옆으로 옮겨 갈 틈이 생길 수 있습니다. 헬스장 공용 물건, 운동복 마찰, 땀 닦는 법과 침 치료 중 운동 재개 시점을 정리했습니다.",
+      "image": "assets/images/doctor-lee.jpg",
+      "datePublished": "2026-11-20",
+      "dateModified": "2026-11-20"
+    },
+    {
       "slug": "eyelid-flat-wart-eye-rubbing-makeup-contact-lens",
       "title": "제주 눈가·눈꺼풀 편평사마귀, 눈 비비기나 화장·렌즈 때문에 더 늘어날 수 있나요?",
       "category": "편평사마귀",
