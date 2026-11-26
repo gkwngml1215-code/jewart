@@ -3,6 +3,15 @@
   "about": "원장 컬럼 목록의 원본입니다. 관리 도구가 발행할 때 이 파일을 먼저 읽고 파일명(slug) 기준으로 병합합니다. 직접 고칠 때는 다른 글이 빠지지 않게 주의하세요.",
   "columns": [
     {
+      "slug": "flat-wart-picking-tweezers-self-removal",
+      "title": "제주 편평사마귀, 손톱으로 뜯거나 족집게로 떼어 내면 어떤 일이 생길 수 있나요?",
+      "category": "편평사마귀",
+      "cardSummary": "편평사마귀를 손톱으로 뜯거나 손톱깎이·족집게·바늘로 떼어 낼 때 번짐과 상처·색소가 남을 수 있는 이유, 이미 뜯었을 때의 관리, 시중 사마귀 제품을 얼굴에 쓸 때 살필 점과 열을 쓰지 않는 침 치료를 정리했습니다.",
+      "image": "assets/images/doctor-lee.jpg",
+      "datePublished": "2026-11-27",
+      "dateModified": "2026-11-27"
+    },
+    {
       "slug": "flat-wart-early-signs-first-few-bumps",
       "title": "제주 편평사마귀 초기 신호, 처음 한두 개 보일 때는 어떤 모양이고 어떻게 지켜봐야 할까요?",
       "category": "편평사마귀",
